@@ -1,0 +1,46 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id        String    @id @default(cuid())
+  email     String    @unique
+  name      String
+  role      String    @default("user")
+  activities Activity[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Activity {
+  id        String   @id @default(cuid())
+  action    String
+  location  String
+  status    String
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+model SecurityThreat {
+  id          String   @id @default(cuid())
+  type        String
+  severity    String
+  status      String
+  description String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model SecurityMetric {
+  id        String   @id @default(cuid())
+  name      String
+  value     Int
+  trend     String
+  createdAt DateTime @default(now())
+}
