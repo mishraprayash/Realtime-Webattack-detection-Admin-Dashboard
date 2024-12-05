@@ -1,4 +1,4 @@
-// File: /home/ashim/Documents/sentinel/sentinel/src/app/layout.tsx
+// File: /Users/prayashmishra/Downloads/COLLEGE/7th SEMESTER/Sentinel/UI/sentinel/src/app/layout.tsx
 import * as entry from '../../../src/app/layout.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

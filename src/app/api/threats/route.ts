@@ -3,14 +3,17 @@ import { prisma } from '@/lib/prisma';
 
 export async function GET() {
   try {
-    const threats = await prisma.securityThreat.findMany({
+    const allThreats = await prisma.activity.findMany({
+      where:{
+        category:"MALICIOUS"
+      },
       orderBy: {
         createdAt: 'desc',
       },
     });
 
-    return NextResponse.json(threats);
+    return NextResponse.json(allThreats);
   } catch (error) {
     return NextResponse.json({ error: 'Failed to fetch threats' }, { status: 500 });
   }
-}
+};

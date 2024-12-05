@@ -1,17 +1,18 @@
+
 export const attackData = {
   labels: [
     'SQL Injection',
     'Cross-Site Scripting (XSS)',
-    'DDoS Attacks',
-    'Brute Force',
-    'Man-in-the-Middle',
-    'Phishing Attempts',
-    'Malware Detection',
-    'Zero-day Exploits'
+    'Server Side Request Forgery (SSRF)',
+    'Command Injection',
+    'HTML Injection',
+    'CSS Injection',
+    'Local File Inclusion (LFI)',
+    'XXE Injection',
   ],
   datasets: [
     {
-      data: [65, 45, 38, 24, 18, 32, 27, 15],
+      data: [12, 19, 3, 5, 2, 3, 7, 8],
       backgroundColor: [
         'rgba(255, 99, 132, 0.8)',
         'rgba(54, 162, 235, 0.8)',

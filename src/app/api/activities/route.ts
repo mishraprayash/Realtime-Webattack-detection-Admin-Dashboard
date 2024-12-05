@@ -1,25 +1,22 @@
-import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
 
 export async function GET() {
   try {
     const activities = await prisma.activity.findMany({
-      include: {
-        user: {
-          select: {
-            name: true,
-            email: true,
-          },
-        },
-      },
       orderBy: {
-        createdAt: 'desc',
+        createdAt: "desc",
       },
-      take: 10,
+      // send only 5
+      take: 5,
     });
-
-    return NextResponse.json(activities);
+    return NextResponse.json({
+      activities,
+    });
   } catch (error) {
-    return NextResponse.json({ error: 'Failed to fetch activities' }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to fetch activities" },
+      { status: 500 }
+    );
   }
 }

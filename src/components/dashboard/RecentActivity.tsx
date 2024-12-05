@@ -1,8 +1,10 @@
 import { Clock } from 'lucide-react';
-import { activities } from '@/lib/activity-data';
 import ActivityItem from '@/components/ui/ActivityItem';
+import { fetchActivities } from '@/lib/api';
 
-export default function RecentActivity() {
+
+const RecentActivity = async()=> {
+  const activities = await fetchActivities();
   return (
     <div className="bg-white rounded-lg shadow-sm">
       <div className="px-6 py-4 border-b border-gray-200">
@@ -12,10 +14,11 @@ export default function RecentActivity() {
         </div>
       </div>
       <div className="divide-y divide-gray-200">
-        {activities.map((activity) => (
-          <ActivityItem key={activity.id} {...activity} />
+        {activities.map((activity,index) => (
+          <ActivityItem key={index} {...activity} />
         ))}
       </div>
     </div>
   );
 }
+export default RecentActivity;

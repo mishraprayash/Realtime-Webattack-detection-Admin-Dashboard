@@ -3,6 +3,7 @@ import { Shield, Users, AlertTriangle, Settings, BarChart } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+
 export default function Sidebar() {
   const path = usePathname();
   const [navigation] = useState([
