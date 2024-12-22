@@ -1,4 +1,3 @@
-import { subHours } from "date-fns";
 
 export type AttackType =
   | "SQLI"
@@ -8,7 +7,8 @@ export type AttackType =
   | "CSSI"
   | "HTMLI"
   | "XXE"
-  | "XSS";
+  | "XSS"
+  | "SSRF";
 
 export interface LogEntry {
   id: string;
@@ -29,6 +29,7 @@ const attackTypes: AttackType[] = [
   "HTMLI",
   "XXE",
   "XSS",
+  "SSRF"
 ];
 
 
