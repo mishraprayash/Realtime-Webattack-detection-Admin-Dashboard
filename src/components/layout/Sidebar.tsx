@@ -15,13 +15,13 @@ export default function Sidebar() {
     },
   ]);
   return (
-    <div className="hidden md:flex md:flex-shrink-0">
+    <div className="hidden lg:flex lg:flex-shrink-0">
       <div className="flex flex-col w-64">
         <div className="flex flex-col h-0 flex-1 bg-gray-800">
           <div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
             <div className="flex items-center flex-shrink-0 px-4">
               <Shield className="h-8 w-8 text-blue-500" />
-              <span className="ml-2 text-xl font-bold text-white">
+              <span className=" text-xl font-bold text-white">
                 SentinelAdmin
               </span>
             </div>

@@ -8,8 +8,8 @@ export default function AttackLogsPage() {
     redirect("/");
   }
   return (
-    <div className="container mx-auto p-5">
-      <h1 className="text-3xl font-bold mb-5 text-center p-5 rounded-2xl bg-gray-700 text-white">
+    <div className="p-5 w-full">
+      <h1 className="text-3xl font-bold mb-5 text-center p-5 rounded-2xl bg-gray-800 text-white">
         Attack Logs
       </h1>
       <Logs />

@@ -16,9 +16,9 @@ export default function Home() {
       <DashboardHeader />
       <SecurityOverview />
       <AttackStatistics />
-      <div className="">
+      {/* <div className=""> */}
         <RecentActivity />
-      </div>
+      {/* </div> */}
     </div>  
   );
 }

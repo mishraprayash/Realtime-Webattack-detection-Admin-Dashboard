@@ -44,11 +44,11 @@ model User {
 model Activity {
   id       String @id @default(cuid())
   method   String
-  endpoint String
+  endpoint String @db.MediumText
   ip       String
   category Category @default(NORMAL)
   attackType AttackType @default(NULL)
-  attackPayload String? @default("")
+  attackPayload String? @db.LongText
   severity Severity? @default(NULL)
   createdAt DateTime @default(now())
 }

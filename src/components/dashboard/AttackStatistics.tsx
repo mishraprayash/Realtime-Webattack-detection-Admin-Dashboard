@@ -154,6 +154,16 @@ export default async function AttackStatistics() {
 
   const attackCountArray = await getCategoryCounts();
 
+  if (attackCountArray.length === 0) {
+    return (
+      <div className="flex items-center justify-center h-[50vh]">
+        <h2 className="text-2xl font-semibold text-gray-500">
+          No Logs Found
+        </h2>
+      </div>
+    );
+  }
+
   const pieChartData = {
     labels: LABELS,
     datasets: [
@@ -205,7 +215,7 @@ export default async function AttackStatistics() {
     ],
   };
 
-  return (
+  return  (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
       {/* Pie Chart */}
       <div className="group relative bg-white p-6 rounded-lg shadow hover:shadow-lg transition-shadow duration-300">

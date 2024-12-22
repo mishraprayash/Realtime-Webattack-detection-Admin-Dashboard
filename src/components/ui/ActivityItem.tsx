@@ -1,4 +1,3 @@
-
 interface ActivityItemProps {
   ip: string;
   createdAt: Date;
@@ -16,19 +15,23 @@ export default function ActivityItem({
   createdAt,
   attackType,
 }: ActivityItemProps) {
-
   return (
     <div className="px-6 py-4 bg-gray-200 rounded-lg m-2">
-      <div className="md:flex items-center justify-between ">
-        <div className="flex items-center">
-          <div className="ml-4">
-            <p className="text-sm font-medium text-gray-900">{ip}</p>
-          </div>
-        </div>
-        <div className="flex items-center">
-          <span className="text-sm text-gray-500 mr-4">{attackType}</span>
-        </div>
-        <p className="mt-2 text-sm text-gray-500">{new Date(createdAt).toUTCString()}</p>
+      <div className="md:flex justify-between gap-6">
+        <p className="font-bold text-gray-800 p-2  italic">
+          <span className="font-normal text-gray-500">IP Address{":  "}</span>
+          {ip}
+        </p>
+
+        <p className="text-red-500  p-2 font-bold">
+          <span className="font-normal text-gray-500">Type{":  "}</span>
+          {attackType}
+        </p>
+
+        <p className="text-gray-500 p-2">
+          <span className="font-bold ">Date{":  "}</span>
+          {new Date(createdAt).toUTCString()}
+        </p>
       </div>
     </div>
   );

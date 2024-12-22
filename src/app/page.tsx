@@ -1,15 +1,12 @@
 "use client";
 
-import React from "react";
-import { useState,useEffect } from "react";
-
+import React, { useState, useEffect } from "react";
 
 const LoginPage: React.FC = () => {
-  const [username, setusername] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  // fetch cookies from browser as this is client component
   useEffect(() => {
     const cookies = document.cookie;
     if (cookies.includes("token=admintoken")) {
@@ -21,7 +18,7 @@ const LoginPage: React.FC = () => {
     e.preventDefault();
     setError("");
     try {
-      const response = await fetch("/api/login",{
+      const response = await fetch("/api/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -40,45 +37,38 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className=" bg-gray-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
+    <div className=" flex items-center justify-center">
+      <div className="max-w-lg w-full space-y-8 p-10 bg-white rounded-xl shadow-lg">
         <div className="text-center">
           <img
-            src="https://img.freepik.com/free-vector/business-user-cog_78370-7040.jpg?semt=ais_hybrid" // Replace with your image URL
+            src="https://img.freepik.com/free-vector/business-user-cog_78370-7040.jpg?semt=ais_hybrid"
             alt="Admin Dashboard Logo"
             className="mx-auto"
             height={100}
             width={100}
           />
-          <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
-            Admin Login
-          </h2>
-          <p className="mt-2 text-sm text-gray-600">
-            Sign in to access your dashboard
-          </p>
+          <h1 className="mt-6 text-3xl font-extrabold text-gray-900">Sentinel</h1>
+         
         </div>
-        <form className="flex flex-col gap-2" onSubmit={handleSubmit}>
-          <div className="flex flex-col gap-5 rounded-md shadow-sm -space-y-px">
-            <div>
-              <label htmlFor="username" className="sr-only">
-                Username
-              </label>
+        <form className="flex flex-col gap-5 bg-white shadow-md shadow-black p-5 rounded border-black border-t-[1px]" onSubmit={handleSubmit}>
+        <p className="mt-2 text-xl text-gray-600 text-center font-semibold">Sign in to access your dashboard</p>
+          <div className="flex flex-col gap-5 ">
+            <div className="flex flex-col gap-2">
+              <label htmlFor="username">Username</label>
               <input
                 id="username"
                 name="username"
-                type="username"
+                type="text"
                 autoComplete="username"
                 required
                 value={username}
-                onChange={(e) => setusername(e.target.value)}
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="username"
+                onChange={(e) => setUsername(e.target.value)}
+                className="appearance-none rounded-md block w-full px-4 py-3 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 placeholder-gray-400"
+                placeholder="Username"
               />
             </div>
-            <div>
-              <label htmlFor="password" className="sr-only">
-                Password
-              </label>
+            <div className="flex flex-col gap-2">
+              <label htmlFor="password">Password</label>
               <input
                 id="password"
                 name="password"
@@ -87,16 +77,16 @@ const LoginPage: React.FC = () => {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                className="appearance-none rounded-md block w-full px-4 py-3 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 placeholder-gray-400"
                 placeholder="Password"
               />
             </div>
           </div>
           {error && <p className="text-red-500 text-sm my-3">{error}</p>}
-          <div className="mt-3">
+          <div className="mt-6">
             <button
               type="submit"
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              className="w-full py-3 px-4 border border-transparent text-sm font-medium rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-300 ease-in-out"
             >
               Sign In
             </button>

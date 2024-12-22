@@ -51,19 +51,37 @@ export function LogsTable({ logs }: LogsTableProps) {
       .replace(/"password":\s*"[^"]+"/g, '"password": "********"')
       .replace(/"token":\s*"[^"]+"/g, '"token": "********"')
       .replace(/"username":\s*"[^"]+"/g, '"username": "********"');
-    
+
     // Handle form data (e.g., URL-encoded form data)
-    input = input
-      .replace(/(?:^|&)(email|password|token|username)=([^&]*)/gi, (match, key, value) => {
-        return `&${key}=${key === 'password' || key === 'email' || key === 'username' || key === 'token' ? '********' : value}`;
-      });
-    
+    input = input.replace(
+      /(?:^|&)(email|password|token|username)=([^&]*)/gi,
+      (match, key, value) => {
+        return `&${key}=${
+          key === "password" ||
+          key === "email" ||
+          key === "username" ||
+          key === "token"
+            ? "********"
+            : value
+        }`;
+      }
+    );
+
     // Optionally handle sensitive info in other places (cookies, headers, etc.)
-    input = input
-      .replace(/(?:^|;\s*)(email|password|token|username)=([^;]*)/gi, (match, key, value) => {
-        return `; ${key}=${key === 'password' || key === 'email' || key === 'username' || key === 'token' ? '********' : value}`;
-      });
-    
+    input = input.replace(
+      /(?:^|;\s*)(email|password|token|username)=([^;]*)/gi,
+      (match, key, value) => {
+        return `; ${key}=${
+          key === "password" ||
+          key === "email" ||
+          key === "username" ||
+          key === "token"
+            ? "********"
+            : value
+        }`;
+      }
+    );
+
     return input;
   };
 
@@ -119,36 +137,37 @@ export function LogsTable({ logs }: LogsTableProps) {
 
   // Render Grid view
   const renderGridView = () => (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 xl:grid-cols-3">
       {logs.map((log) => (
         <div
           key={log.id}
-          className={`p-4  rounded-md shadow-lg border-4 hover:scale-[99%] transition-all ${
+          className={`p-4 rounded-md shadow-lg border-4 hover:scale-[99%] transition-all ${
             expandedRows.includes(log.id) ? "bg-gray-50" : "bg-white"
-          } cursor-pointer`}
+          } cursor-pointer flex flex-col`}
           onClick={() => setSelectedLog(log)}
         >
-          <div className="flex justify-between items-start">
-            <div>
-              <p className="text-md text-white bg-red-500 px-1 py-1 rounded-xl w-fit mb-2 ">{log.attackType}</p>
-              <h3 className="font-semibold text-lg overflow-hidden w-40 truncate">
-                {log.method} - {log.endpoint}
+          <div className="flex justify-between items-start mb-4">
+            <div className="flex flex-col flex-grow">
+              <p className="text-sm sm:text-base text-white bg-red-500 px-2 py-1 rounded-xl w-fit mb-2 font-bold">
+                {log.attackType}
+              </p>
+              <h3 className="font-semibold text-base sm:text-lg overflow-hidden max-w-32 truncate">
+                {log.method} - 
+                <span className="font-normal">{log.endpoint}</span>
               </h3>
             </div>
-            <span className="text-sm text-gray-400">
-              {new Date(log.createdAt).toUTCString()}
+            <span className="text-xs  text-gray-400 font-semibold overflow-hidden max-w-32 truncate">
+              {new Date(log.createdAt).toLocaleDateString()}
             </span>
           </div>
-          <div className="mt-4 flex justify-between items-center">
-            <p className="text-sm text-gray-600">
+          <div className="sm:flex justify-between items-center mt-auto">
+            <p className="text-xs sm:text-sm text-gray-800 min-w-64 truncate">
               IP:{" "}
               <b>
                 <i>{log.ip}</i>
               </b>
             </p>
-            <button
-              className="text-blue-500 hover:underline"
-            >
+            <button className="text-xs sm:text-sm  text-blue-500 hover:underline truncate">
               See Request
             </button>
           </div>
@@ -156,7 +175,9 @@ export function LogsTable({ logs }: LogsTableProps) {
       ))}
     </div>
   );
-
+  
+  
+  
   // Render the modal for Grid view
   const renderLogDetailsModal = () => {
     if (!selectedLog) return null;
@@ -171,14 +192,19 @@ export function LogsTable({ logs }: LogsTableProps) {
             {showRedacted ? "Show Redacted Info" : "Hide Sensitive Info"}
           </button>
           <div>
-              <p className="whitespace-pre-wrap">
-            <span className="text-blue-500 text-xl font-semibold">{selectedLog.method}</span> - <span className="text-[1rem] px-3 text-gray-700">{selectedLog.endpoint}</span>
-          </p>
-          <p className="text-lg font-mono font-extrabold text-gray-500 py-5">
-            {selectedLog.attackType}
-          </p>
+            <p className="whitespace-pre-wrap">
+              <span className="text-blue-500 text-xl font-semibold">
+                {selectedLog.method}
+              </span>{" "}
+              -{" "}
+              <span className="text-[1rem] px-3 text-gray-700">
+                {selectedLog.endpoint}
+              </span>
+            </p>
+            <p className="text-lg font-mono font-extrabold text-gray-500 py-5">
+              {selectedLog.attackType}
+            </p>
           </div>
-        
 
           <p className="mt-2 text-md text-gray-600">
             IP:{" "}
@@ -200,16 +226,20 @@ export function LogsTable({ logs }: LogsTableProps) {
   };
 
   return (
-    <div>
+    <div className="space-y-6">
       <div className="flex justify-end items-center mb-4">
         <button
           onClick={toggleView}
-          className="px-4 py-2 text-white bg-gray-700 rounded-xl"
+          className="px-5 py-2 transition-colors duration-200 rounded-xl shadow-md focus:outline-none text-gray-500 mr-4 font-bold"
         >
-          {viewType === "table" ? "Grid View" : "Table View"}
+          {viewType === "table"
+            ? "See Grid View"
+            : "See Table View"}
         </button>
       </div>
-      {viewType === "table" ? renderTableView() : renderGridView()}
+      <div className="bg-white p-6 rounded-md shadow-md">
+        {viewType === "table" ? renderTableView() : renderGridView()}
+      </div>
       {renderLogDetailsModal()}
     </div>
   );

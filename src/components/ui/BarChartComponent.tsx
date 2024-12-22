@@ -20,15 +20,16 @@ interface BarChartComponentProps {
 
 const BarChartComponent: React.FC<BarChartComponentProps> = ({ data }) => {
   return (
-    <div>
+    <div style={{ width: "100%", height: "400px", position: "relative" }}>  {/* Set a fixed height, like 400px */}
       <Bar
         data={data}
         options={{
-          responsive: true,
+          responsive: true, // Makes the chart responsive
+          maintainAspectRatio: false, // Allows the chart to grow and shrink with the container
           plugins: {
             title: {
               display: true,
-              text: 'Attack Distribution Count',
+              text: "Attack Distribution Count",
               font: {
                 size: 16,
               },

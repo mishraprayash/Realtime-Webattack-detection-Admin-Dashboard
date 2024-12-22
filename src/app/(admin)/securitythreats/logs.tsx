@@ -41,7 +41,7 @@ const SelectInput: React.FC<SelectInputProps> = ({
   className,
 }) => (
   <select
-    className={`border rounded px-3 py-2 text-sm ${className}`}
+    className={`border rounded-lg px-3 py-2 text-sm bg-gray-50 hover:bg-gray-100  focus:outline-none ${className}`}
     value={value}
     onChange={(e) => onChange(e.target.value)}
   >
@@ -63,6 +63,12 @@ export function Logs() {
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isFilterVisible, setIsFilterVisible] = useState(false); // Controls filter visibility
+
+  const toggleFilterVisibility = () => {
+    setIsFilterVisible((prev) => !prev);
+  };
+
   const fetchLogs = async () => {
     try {
       setIsLoading(true);
@@ -77,6 +83,7 @@ export function Logs() {
       setIsLoading(false);
     }
   };
+
   useEffect(() => {
     fetchLogs();
   }, []);
@@ -137,9 +144,9 @@ export function Logs() {
         <button
           key={page}
           onClick={() => handlePageChange(page)}
-          className={`px-3 py-1 border rounded text-sm ${
+          className={`px-3 py-1 border rounded-xl text-sm ${
             page === currentPage
-              ? "bg-blue-500 text-white"
+              ? "bg-gray-700 text-white"
               : "bg-gray-100 hover:bg-gray-200"
           }`}
         >
@@ -153,14 +160,14 @@ export function Logs() {
         <button
           onClick={() => handlePageChange(1)}
           disabled={currentPage === 1}
-          className="px-3 py-1 border rounded text-sm bg-gray-100 hover:bg-gray-200 disabled:opacity-50"
+          className="px-3 py-1 border rounded-lg text-sm bg-gray-100 hover:bg-gray-200 disabled:opacity-50"
         >
           {"<<"}
         </button>
         <button
           onClick={() => handlePageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          className="px-3 py-1 border rounded text-sm bg-gray-100 hover:bg-gray-200 disabled:opacity-50"
+          className="px-3 py-1 border rounded-lg text-sm bg-gray-100 hover:bg-gray-200 disabled:opacity-50"
         >
           {"<"}
         </button>
@@ -168,14 +175,14 @@ export function Logs() {
         <button
           onClick={() => handlePageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
-          className="px-3 py-1 border rounded text-sm bg-gray-100 hover:bg-gray-200 disabled:opacity-50"
+          className="px-3 py-1 border rounded-lg text-sm bg-gray-100 hover:bg-gray-200 disabled:opacity-50"
         >
           {">"}
         </button>
         <button
           onClick={() => handlePageChange(totalPages)}
           disabled={currentPage === totalPages}
-          className="px-3 py-1 border rounded text-sm bg-gray-100 hover:bg-gray-200 disabled:opacity-50"
+          className="px-3 py-1 border rounded-lg text-sm bg-gray-100 hover:bg-gray-200 disabled:opacity-50"
         >
           {">>"}
         </button>
@@ -185,51 +192,58 @@ export function Logs() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap justify-between items-center gap-4">
-        {/* Attack Type Filter */}
-        <SelectInput
-          value={filter.attackType}
-          onChange={(value: any) => handleFilterChange("attackType", value)}
-          options={[
-            { label: "All Attacks", value: "ALL" },
-            ...ATTACK_TYPES.map((type) => ({ label: type, value: type })),
-          ]}
-          className={"w-40"}
-        />
-
-        {/* IP Filter */}
-        <Input
-          placeholder="Search IP"
-          className="w-40 border text-sm"
-          value={filter.ip}
-          onChange={(e) => handleFilterChange("ip", e.target.value)}
-        />
-
-        {/* Time Filter */}
-        <SelectInput
-          value={filter.time}
-          onChange={(value: any) => handleFilterChange("time", value)}
-          options={TIME_FILTERS}
-          className={"w-40"}
-        />
-
-        {/* Refresh Data */}
-        <Button
-          onClick={() => fetchLogs()}
-          className="bg-gray-700 text-white hover:bg-gray-600 rounded-2xl"
+      {/* Header Row with Toggle Button */}
+      <div className="flex justify-end items-center p-4 bg-white shadow rounded-xl">
+        <button
+          onClick={toggleFilterVisibility}
+          className="px-5 py-2 transition-colors duration-200 rounded-xl shadow-md focus:outline-none bg-gray-700 text-white hover:bg-gray-800 mr-4"
         >
-          Refresh Data
-        </Button>
+          {isFilterVisible ? "Hide Filters" : "Show Filters"}
+        </button>
       </div>
 
+      {/* Filter Section */}
+      {isFilterVisible && (
+        <div className="flex flex-wrap justify-evenly items-center p-4 rounded-xl">
+          <SelectInput
+            value={filter.attackType}
+            onChange={(value: any) => handleFilterChange("attackType", value)}
+            options={[
+              { label: "All Attacks", value: "ALL" },
+              ...ATTACK_TYPES.map((type) => ({ label: type, value: type })),
+            ]}
+            className="w-40 shadow-lg"
+          />
+          <Input
+            placeholder="Search IP"
+            className="w-40 rounded-lg shadow-lg"
+            value={filter.ip}
+            onChange={(e) => handleFilterChange("ip", e.target.value)}
+          />
+          <SelectInput
+            value={filter.time}
+            onChange={(value: any) => handleFilterChange("time", value)}
+            options={TIME_FILTERS}
+            className="w-40 shadow-lg"
+          />
+        </div>
+      )}
+
+      {/* Logs Table and Pagination */}
       {isLoading ? (
-        <p>Loading...</p>
+        <div className="flex justify-center items-center h-64">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-gray-500"></div>
+        </div>
       ) : error ? (
-        <p className="text-red-500">{error}</p>
+        <p className="text-center text-red-500 font-semibold">{error}</p>
+      ) : filteredLogs.length === 0 ? (
+        <p className="text-center text-gray-600 font-medium">
+          No data available for the selected filters.
+        </p>
       ) : (
         <>
-          <div className="flex justify-between items-center">
-            <p className="text-sm text-gray-600">
+          <div className="flex justify-between items-center px-4">
+            <p className=" text-gray-600 ml-4">
               Showing{" "}
               {currentLogs.length > 0 ? (currentPage - 1) * PAGE_SIZE + 1 : 0}-
               {Math.min(currentPage * PAGE_SIZE, filteredLogs.length)} of{" "}
@@ -237,13 +251,9 @@ export function Logs() {
             </p>
             {renderPagination()}
           </div>
-
           <LogsTable logs={currentLogs} />
         </>
       )}
     </div>
   );
 }
-
-
-
