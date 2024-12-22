@@ -7,6 +7,7 @@ CREATE TABLE `Activity` (
     `category` ENUM('NORMAL', 'MALICIOUS') NOT NULL DEFAULT 'NORMAL',
     `attackType` ENUM('NULL', 'SQLI', 'NOSQLI', 'XSS', 'SSRF', 'CMDI', 'LFI', 'HTMLI', 'CSSI', 'XXE') NOT NULL DEFAULT 'NULL',
     `attackPayload` VARCHAR(191) NULL DEFAULT '',
+    `severity` ENUM('NULL', 'LOW', 'MEDIUM', 'HIGH', 'CRITICAL') NULL DEFAULT 'NULL',
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
     PRIMARY KEY (`id`)
