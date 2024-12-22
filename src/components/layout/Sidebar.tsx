@@ -7,7 +7,7 @@ import { useState } from "react";
 export default function Sidebar() {
   const path = usePathname();
   const [navigation] = useState([
-    { name: "Dashboard", icon: BarChart, to: "/" },
+    { name: "Dashboard", icon: BarChart, to: "/dashboard" },
     {
       name: "Security Threats",
       icon: Shield,

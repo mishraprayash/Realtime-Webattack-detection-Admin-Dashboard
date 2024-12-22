@@ -18,3 +18,17 @@ export async function fetchActivities() {
   return activities
 }
 
+async function fetchAttackCount() {
+  const categoryCounts = await prisma.activity.groupBy({
+    by: ['attackType'],
+    _count: {
+      category: true,
+    },    
+  });
+
+  return categoryCounts;
+}
+
+fetchAttackCount().then((data) => {
+
+});

@@ -19,7 +19,7 @@ export default function ActivityItem({
 
   return (
     <div className="px-6 py-4 bg-gray-200 rounded-lg m-2">
-      <div className="flex items-center justify-between">
+      <div className="md:flex items-center justify-between ">
         <div className="flex items-center">
           <div className="ml-4">
             <p className="text-sm font-medium text-gray-900">{ip}</p>

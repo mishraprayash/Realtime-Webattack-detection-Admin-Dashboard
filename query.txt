@@ -1,0 +1,6 @@
+INSERT INTO `Activity` (`id`, `method`, `endpoint`, `ip`, `category`, `attackType`, `attackPayload`, `createdAt`) VALUES
+('116', 'POST', '/api/v1/authenticate', '203.0.113.116', 'MALICIOUS', 'SQLI', '\' UNION SELECT null, username, password FROM users--', '2024-12-05 10:30:00.000'),
+('117', 'GET', '/user/search?q=<iframe src="javascript:alert(\'XSS\')">', '192.0.2.117', 'MALICIOUS', 'XSS', '', '2024-12-05 10:45:00.000'),
+('118', 'DELETE', '/admin/remove?file=../../../../etc/hosts', '8.8.8.118', 'MALICIOUS', 'LFI', '', '2024-12-05 11:00:00.000'),
+('119', 'POST', '/api/upload', '198.51.100.119', 'MALICIOUS', 'SSRF', 'http://192.168.1.1/admin', '2024-12-05 11:15:00.000'),
+('120', 'PATCH', '/user/settings', '203.0.113.120', 'MALICIOUS', 'CMDI', 'echo "malicious content" > /tmp/backdoor.sh', '2024-12-05 11:30:00.000');
