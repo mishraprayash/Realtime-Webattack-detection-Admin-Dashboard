@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = "force-dynamic";
+
 export async function GET() {
   try {
     const activities = await prisma.activity.findMany({
@@ -8,7 +10,7 @@ export async function GET() {
         createdAt: "desc",
       },
       // send only 5
-      take: 5,
+      take: 7,
     });
     return NextResponse.json({
       activities,
