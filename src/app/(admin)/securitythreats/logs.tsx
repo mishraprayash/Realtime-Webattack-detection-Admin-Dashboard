@@ -72,7 +72,7 @@ export function Logs() {
   const fetchLogs = async () => {
     try {
       setIsLoading(true);
-      const response = await fetch("/api/threats");
+      const response = await fetch("/api/threats",{cache: "no-store"});
       if (!response.ok) throw new Error("Failed to fetch logs");
       const data = await response.json();
       setLogs(data);
