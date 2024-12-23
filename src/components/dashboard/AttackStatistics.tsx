@@ -128,38 +128,60 @@ export default async function AttackStatistics() {
     "LFI",
     "SSRF",
     "CMDI",
-    "NoSQLI",
+    "NOSQLI",
     "XXE",
     "HTMLI",
     "CSSI",
-  ];
-
-  async function getCategoryCounts() {
+  ] ;
+  
+  // Define the type of attackType based on LABELS
+  type AttackType = typeof LABELS[number];
+  
+  // Define the structure of the result from Prisma
+  interface GroupByResult {
+    attackType: AttackType | "NULL";
+    _count: {
+      attackType: number;
+    };
+  }
+  
+  async function getCategoryCounts(): Promise<number[]> {
+    // Fetch grouped data from Prisma
     const arrayOfCounts = await prisma.activity.groupBy({
       by: ["attackType"],
       _count: {
         attackType: true,
       },
     });
-
-    const data = arrayOfCounts.map((item) => ({
-      category: item.attackType,
-      count: item._count.attackType,
-    }));
-
-    return data
-      .filter((item) => item.category !== "NULL")
-      .map((item) => item.count);
+  
+    // Create a map of counts for quick lookup
+    const countMap: Record<AttackType, number> = LABELS.reduce((map, label) => {
+      map[label] = 0; // Initialize all counts to 0
+      return map;
+    }, {} as Record<AttackType, number>);
+  
+    // Populate the map with actual counts
+    arrayOfCounts.forEach(({ attackType, _count }) => {
+      if (attackType !== "NULL") {
+        countMap[attackType] = _count.attackType;
+      }
+    });
+  
+    // Generate the counts array based on LABELS order
+    const counts = LABELS.map(label => countMap[label]);
+  
+    console.log(counts);
+    return counts;
   }
+  
 
   const attackCountArray = await getCategoryCounts();
+  console.log(attackCountArray);
 
   if (attackCountArray.length === 0) {
     return (
       <div className="flex items-center justify-center h-[50vh]">
-        <h2 className="text-2xl font-semibold text-gray-500">
-          No Logs Found
-        </h2>
+        <h2 className="text-2xl font-semibold text-gray-500">No Logs Found</h2>
       </div>
     );
   }
@@ -215,7 +237,7 @@ export default async function AttackStatistics() {
     ],
   };
 
-  return  (
+  return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
       {/* Pie Chart */}
       <div className="group relative bg-white p-6 rounded-lg shadow hover:shadow-lg transition-shadow duration-300">
