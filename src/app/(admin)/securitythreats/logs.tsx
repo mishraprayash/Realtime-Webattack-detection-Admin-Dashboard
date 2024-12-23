@@ -4,7 +4,6 @@ import { useEffect, useMemo, useState } from "react";
 import { LogsTable } from "./logs-table";
 import { LogEntry, AttackType } from "@/utils/mockData";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 
 const ATTACK_TYPES = [
   "ALL",
@@ -72,7 +71,7 @@ export function Logs() {
   const fetchLogs = async () => {
     try {
       setIsLoading(true);
-      const response = await fetch("/api/threats",{cache: "no-store"});
+      const response = await fetch("/api/threats", { cache: "no-store" });
       if (!response.ok) throw new Error("Failed to fetch logs");
       const data = await response.json();
       setLogs(data);
@@ -200,8 +199,10 @@ export function Logs() {
         >
           {isFilterVisible ? "Hide Filters" : "Show Filters"}
         </button>
+        <button className="px-5 py-2 transition-colors duration-200 rounded-xl shadow-md focus:outline-none bg-gray-700 text-white hover:bg-gray-800 mr-4" onClick={fetchLogs}>
+          Refresh Data
+        </button>
       </div>
-
       {/* Filter Section */}
       {isFilterVisible && (
         <div className="flex flex-wrap justify-evenly items-center p-4 rounded-xl">
