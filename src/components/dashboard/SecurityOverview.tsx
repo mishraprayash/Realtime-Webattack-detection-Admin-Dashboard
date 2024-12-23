@@ -45,7 +45,7 @@ export default function SecurityOverview() {
   useEffect(() => {
     const fetchMetrics = async () => {
       try {
-        const response = await fetch("/api/metrics");
+        const response = await fetch("/api/metrics",{cache:'no-store'});
         if (response.ok) {
           const data = await response.json();
           setMetrics(data);
