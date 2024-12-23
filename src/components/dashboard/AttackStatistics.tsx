@@ -132,11 +132,11 @@ export default async function AttackStatistics() {
     "XXE",
     "HTMLI",
     "CSSI",
-  ] ;
-  
+  ];
+
   // Define the type of attackType based on LABELS
-  type AttackType = typeof LABELS[number];
-  
+  type AttackType = (typeof LABELS)[number];
+
   // Define the structure of the result from Prisma
   interface GroupByResult {
     attackType: AttackType | "NULL";
@@ -144,7 +144,7 @@ export default async function AttackStatistics() {
       attackType: number;
     };
   }
-  
+
   async function getCategoryCounts(): Promise<number[]> {
     // Fetch grouped data from Prisma
     const arrayOfCounts = await prisma.activity.groupBy({
@@ -153,31 +153,26 @@ export default async function AttackStatistics() {
         attackType: true,
       },
     });
-  
+
     // Create a map of counts for quick lookup
     const countMap: Record<AttackType, number> = LABELS.reduce((map, label) => {
       map[label] = 0; // Initialize all counts to 0
       return map;
     }, {} as Record<AttackType, number>);
-  
+
     // Populate the map with actual counts
     arrayOfCounts.forEach(({ attackType, _count }) => {
       if (attackType !== "NULL") {
         countMap[attackType] = _count.attackType;
       }
     });
-  
+
     // Generate the counts array based on LABELS order
-    const counts = LABELS.map(label => countMap[label]);
-  
-    console.log(counts);
+    const counts = LABELS.map((label) => countMap[label]);
     return counts;
   }
-  
 
   const attackCountArray = await getCategoryCounts();
-  console.log(attackCountArray);
-
   if (attackCountArray.length === 0) {
     return (
       <div className="flex items-center justify-center h-[50vh]">
