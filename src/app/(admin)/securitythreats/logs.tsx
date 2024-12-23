@@ -1,9 +1,10 @@
+
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
 import { LogsTable } from "./logs-table";
-import { LogEntry, AttackType } from "@/utils/mockData";
 import { Input } from "@/components/ui/input";
+import { LogEntry } from "@/utils/mockData";
 
 const ATTACK_TYPES = [
   "ALL",
@@ -17,52 +18,41 @@ const ATTACK_TYPES = [
   "XSS",
 ];
 
+interface FilterState {
+  attackType: string;
+  ip: string;
+  time: string;
+  customRange: {
+    start: Date | null;
+    end: Date | null;
+  };
+}
+
 const TIME_FILTERS = [
+  { label: "1 Hour", value: "1hour" },
+  { label: "3 Hours", value: "3hours" },
+  { label: "6 Hours", value: "6hours" },
   { label: "Today", value: "today" },
-  { label: "Last 7 Days", value: "last7days" },
-  { label: "Last Month", value: "lastmonth" },
+  { label: "24 Hours", value: "24hours" },
+  { label: "7 Days", value: "7days" },
+  { label: "Month", value: "month" },
   { label: "All Time", value: "alltime" },
 ];
 
-interface SelectInputProps {
-  value: string;
-  onChange: (value: string) => void;
-  options: { label: string; value: string }[];
-  className?: string;
-}
-
-const PAGE_SIZE = 30; // Logs per page
-
-const SelectInput: React.FC<SelectInputProps> = ({
-  value,
-  onChange,
-  options,
-  className,
-}) => (
-  <select
-    className={`border rounded-lg px-3 py-2 text-sm bg-gray-50 hover:bg-gray-100  focus:outline-none ${className}`}
-    value={value}
-    onChange={(e) => onChange(e.target.value)}
-  >
-    {options.map(({ label, value: optionValue }) => (
-      <option key={optionValue} value={optionValue}>
-        {label}
-      </option>
-    ))}
-  </select>
-);
+const PAGE_SIZE = 48;
 
 export function Logs() {
   const [logs, setLogs] = useState<LogEntry[]>([]);
-  const [filter, setFilter] = useState({
+  const [filter, setFilter] = useState<FilterState>({
     attackType: "ALL",
     ip: "",
     time: "alltime",
+    customRange: { start: null, end: null },
   });
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [isFilterVisible, setIsFilterVisible] = useState(false); // Controls filter visibility
+  const [isFilterVisible, setIsFilterVisible] = useState(false);
 
   const toggleFilterVisibility = () => {
     setIsFilterVisible((prev) => !prev);
@@ -90,14 +80,22 @@ export function Logs() {
   const getDateRange = (timeFilter: string) => {
     const now = new Date();
     switch (timeFilter) {
+      case "1hour":
+        return new Date(now.getTime() - 1 * 60 * 60 * 1000); // Subtract 1 hour
+      case "3hours":
+        return new Date(now.getTime() - 3 * 60 * 60 * 1000); // Subtract 3 hours
+      case "6hours":
+        return new Date(now.getTime() - 6 * 60 * 60 * 1000); // Subtract 6 hours
+      case "24hours":
+        return new Date(now.getTime() - 24 * 60 * 60 * 1000); // Subtract 24 hours
       case "today":
-        return new Date(now.getFullYear(), now.getMonth(), now.getDate());
-      case "last7days":
-        return new Date(now.setDate(now.getDate() - 7));
-      case "lastmonth":
-        return new Date(now.setMonth(now.getMonth() - 1));
+        return new Date(now.getFullYear(), now.getMonth(), now.getDate()); // Midnight of today
+      case "7days":
+        return new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000); // Subtract 7 days
+      case "month":
+        return new Date(now.setMonth(now.getMonth() - 1)); // Subtract 1 month
       default:
-        return null;
+        return null; // No time filter
     }
   };
 
@@ -120,7 +118,7 @@ export function Logs() {
     return filteredLogs.slice(startIndex, startIndex + PAGE_SIZE);
   }, [filteredLogs, currentPage]);
 
-  const handleFilterChange = (key: keyof typeof filter, value: string) => {
+  const handleFilterChange = (key: keyof typeof filter, value: any) => {
     setFilter((prev) => ({ ...prev, [key]: value }));
     setCurrentPage(1); // Reset to the first page on filter change
   };
@@ -199,38 +197,51 @@ export function Logs() {
         >
           {isFilterVisible ? "Hide Filters" : "Show Filters"}
         </button>
-        <button className="px-5 py-2 transition-colors duration-200 rounded-xl shadow-md focus:outline-none bg-gray-700 text-white hover:bg-gray-800 mr-4" onClick={fetchLogs}>
+        <button
+          onClick={fetchLogs}
+          className="px-5 py-2 transition-colors duration-200 rounded-xl shadow-md focus:outline-none bg-gray-700 text-white hover:bg-gray-800"
+        >
           Refresh Data
         </button>
       </div>
+
       {/* Filter Section */}
       {isFilterVisible && (
-        <div className="flex flex-wrap justify-evenly items-center p-4 rounded-xl">
-          <SelectInput
+        <div className="flex flex-wrap justify-evenly items-center p-4 rounded-xl space-y-4 sm:space-y-0">
+          <select
             value={filter.attackType}
-            onChange={(value: any) => handleFilterChange("attackType", value)}
-            options={[
-              { label: "All Attacks", value: "ALL" },
-              ...ATTACK_TYPES.map((type) => ({ label: type, value: type })),
-            ]}
-            className="w-40 shadow-lg"
-          />
+            onChange={(e) => handleFilterChange("attackType", e.target.value)}
+            className="border rounded-lg px-3 py-2 text-sm bg-gray-50 hover:bg-gray-100 focus:outline-none w-40 shadow-lg"
+          >
+            {ATTACK_TYPES.map((type) => (
+              <option key={type} value={type}>
+                {type}
+              </option>
+            ))}
+          </select>
+
           <Input
             placeholder="Search IP"
             className="w-40 rounded-lg shadow-lg"
             value={filter.ip}
             onChange={(e) => handleFilterChange("ip", e.target.value)}
           />
-          <SelectInput
+
+          <select
             value={filter.time}
-            onChange={(value: any) => handleFilterChange("time", value)}
-            options={TIME_FILTERS}
-            className="w-40 shadow-lg"
-          />
+            onChange={(e) => handleFilterChange("time", e.target.value)}
+            className="border rounded-lg px-3 py-2 text-sm bg-gray-50 hover:bg-gray-100 focus:outline-none w-40 shadow-lg"
+          >
+            {TIME_FILTERS.map(({ label, value }) => (
+              <option key={value} value={value}>
+                {label}
+              </option>
+            ))}
+          </select>
         </div>
       )}
 
-      {/* Logs Table and Pagination */}
+      {/* Logs Table */}
       {isLoading ? (
         <div className="flex justify-center items-center h-64">
           <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-gray-500"></div>
