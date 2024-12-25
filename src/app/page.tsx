@@ -6,7 +6,7 @@ const LoginPage: React.FC = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     const cookies = document.cookie;
     if (cookies.includes("token=admintoken")) {
@@ -17,6 +17,7 @@ const LoginPage: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    setLoading(true);
     try {
       const response = await fetch("/api/login", {
         method: "POST",
@@ -32,7 +33,9 @@ const LoginPage: React.FC = () => {
         setError(data.error);
       }
     } catch (error: any) {
-      console.log(error);
+      setError(error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -47,11 +50,17 @@ const LoginPage: React.FC = () => {
             height={100}
             width={100}
           />
-          <h1 className="mt-6 text-3xl font-extrabold text-gray-900">Sentinel</h1>
-         
+          <h1 className="mt-6 text-3xl font-extrabold text-gray-900">
+            Sentinel
+          </h1>
         </div>
-        <form className="flex flex-col gap-5 bg-white shadow-md shadow-black p-5 rounded border-black border-t-[1px]" onSubmit={handleSubmit}>
-        <p className="mt-2 text-xl text-gray-600 text-center font-semibold">Sign in to access your dashboard</p>
+        <form
+          className="flex flex-col gap-5 bg-white shadow-md shadow-black p-5 rounded border-black border-t-[1px]"
+          onSubmit={handleSubmit}
+        >
+          <p className="mt-2 text-xl text-gray-600 text-center font-semibold">
+            Sign in to access your dashboard
+          </p>
           <div className="flex flex-col gap-5 ">
             <div className="flex flex-col gap-2">
               <label htmlFor="username">Username</label>
@@ -84,12 +93,23 @@ const LoginPage: React.FC = () => {
           </div>
           {error && <p className="text-red-500 text-sm my-3">{error}</p>}
           <div className="mt-6">
-            <button
-              type="submit"
-              className="w-full py-3 px-4 border border-transparent text-sm font-medium rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-300 ease-in-out"
-            >
-              Sign In
-            </button>
+            {loading ? (
+              <>
+               <button
+                type="submit"
+                className="w-full py-3 px-4 border border-transparent text-sm font-medium rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-300 ease-in-out"
+              >
+                Loading...
+              </button>
+              </>
+            ) : (
+              <button
+                type="submit"
+                className="w-full py-3 px-4 border border-transparent text-sm font-medium rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-300 ease-in-out"
+              >
+                Sign In
+              </button>
+            )}
           </div>
         </form>
       </div>
