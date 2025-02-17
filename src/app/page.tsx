@@ -7,11 +7,15 @@ const LoginPage: React.FC = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  
   useEffect(() => {
-    const cookies = document.cookie;
-    if (cookies.includes("token=admintoken")) {
-      window.location.href = "/dashboard";
+    const getCookies = async ()=>{
+      const response = await fetch("/api/getcookies");
+      if(response.status === 200){
+        window.location.href = "/dashboard";
+      }
     }
+    getCookies();
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -53,6 +57,9 @@ const LoginPage: React.FC = () => {
           <h1 className="mt-6 text-3xl font-extrabold text-gray-900">
             Sentinel
           </h1>
+          <p>For Testing</p>
+          <p>Username:admin</p>
+          <p>Password:admin123</p>
         </div>
         <form
           className="flex flex-col gap-5 bg-white shadow-md shadow-black p-5 rounded border-black border-t-[1px]"
